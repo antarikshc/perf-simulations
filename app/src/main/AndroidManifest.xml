@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".InfiniteLoopAnrActivity"
+            android:exported="false"
+            android:label="Infinite Loop ANR"
+            android:theme="@style/Theme.ANRSimulation" />
     </application>
 
 </manifest>
