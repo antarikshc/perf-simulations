@@ -1,6 +1,6 @@
 package dev.antariksh.anrsimulation
 
-enum class ANRType {
+enum class SimulationType {
     DIRECT,
     ACTIVITY
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import dev.antariksh.anrsimulation.Simulation
 
 @Composable
-fun ANRSimulationItem(
+fun SimulationItem(
     simulation: Simulation,
     onExecute: (Simulation) -> Unit,
     modifier: Modifier = Modifier

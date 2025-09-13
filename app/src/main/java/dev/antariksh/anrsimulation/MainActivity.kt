@@ -17,8 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.antariksh.anrsimulation.components.ANRSimulationItem
 import dev.antariksh.anrsimulation.components.ConfirmationDialog
+import dev.antariksh.anrsimulation.components.SimulationItem
 import dev.antariksh.anrsimulation.ui.theme.ANRSimulationTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,21 +36,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    
-    private fun executeAnrSimulation(simulation: ANRSimulation) {
+
+    private fun executeAnrSimulation(simulation: Simulation) {
         when (simulation.type) {
-            ANRType.DIRECT -> {
+            SimulationType.DIRECT -> {
                 when (simulation.id) {
-                    ANRSimulations.MAIN_THREAD_SLEEP_ID -> {
+                    Simulations.MAIN_THREAD_SLEEP_ID -> {
                         // Block the main thread for 6 seconds
                         Thread.sleep(6000)
                     }
                 }
             }
 
-            ANRType.ACTIVITY -> {
+            SimulationType.ACTIVITY -> {
                 when (simulation.id) {
-                    ANRSimulations.INFINITE_LOOP_ACTIVITY_ID -> {
+                    Simulations.INFINITE_LOOP_ACTIVITY_ID -> {
                         startActivity(Intent(this, InfiniteLoopAnrActivity::class.java))
                     }
                 }
@@ -61,10 +61,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ANRSimulationScreen(
-    onExecuteAnr: (ANRSimulation) -> Unit,
+    onExecuteAnr: (Simulation) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var simulationToConfirm by remember { mutableStateOf<ANRSimulation?>(null) }
+    var simulationToConfirm by remember { mutableStateOf<Simulation?>(null) }
 
     ANRSimulationList(
         onExecuteAnr = { simulation ->
@@ -93,12 +93,12 @@ fun ANRSimulationScreen(
 
 @Composable
 fun ANRSimulationList(
-    onExecuteAnr: (ANRSimulation) -> Unit,
+    onExecuteAnr: (Simulation) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(ANRSimulations.getAllSimulations()) { simulation ->
-            ANRSimulationItem(
+        items(Simulations.getAllSimulations()) { simulation ->
+            SimulationItem(
                 simulation = simulation,
                 onExecute = onExecuteAnr
             )
