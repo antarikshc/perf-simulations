@@ -41,16 +41,16 @@ class MainActivity : ComponentActivity() {
         when (simulation.type) {
             ANRType.DIRECT -> {
                 when (simulation.id) {
-                    "main_thread_sleep" -> {
-                        // Block the main thread for 10 seconds
-                        Thread.sleep(10000)
+                    ANRSimulations.MAIN_THREAD_SLEEP_ID -> {
+                        // Block the main thread for 6 seconds
+                        Thread.sleep(6000)
                     }
                 }
             }
 
             ANRType.ACTIVITY -> {
                 when (simulation.id) {
-                    "infinite_loop_activity" -> {
+                    ANRSimulations.INFINITE_LOOP_ACTIVITY_ID -> {
                         startActivity(Intent(this, InfiniteLoopAnrActivity::class.java))
                     }
                 }
