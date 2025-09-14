@@ -22,6 +22,17 @@ Launches separate activity with an infinite loop that can be triggered by user i
 - **Location**: `InfiniteLoopAnrActivity.startInfiniteLoop()`
 - **Requires Confirmation**: Yes
 
+### 3. Bubble Sort on Main Thread (DIRECT)
+
+Sorts a large array (100,000 elements) using bubble sort algorithm on the main thread, causing
+CPU-bound ANR
+
+- **ID**: `bubble_sort_main_thread`
+- **Duration**: Device-dependent (typically 10-30 seconds)
+- **Recovery**: Automatic (after sort completes)
+- **Location**: `MainActivity.executeAnrSimulation()`
+- **Requires Confirmation**: Yes
+
 ## Architecture
 
 ### Execution Types
