@@ -8,19 +8,9 @@ testing with performance analysis tools like Perfetto tracing and other debuggin
 This app provides a controlled environment to trigger different types of ANRs, helping developers
 understand ANR patterns, test monitoring tools, and analyze app performance under stress conditions.
 
-## Features
+## SDK
 
-- **Multiple ANR Types**: Direct execution and activity-based simulations
-- **User-Friendly Interface**: Material 3 design with Jetpack Compose
-- **Confirmation Dialogs**: Optional safety confirmations before triggering ANRs
-- **Scalable Architecture**: Easy to add new ANR simulation scenarios
-- **Perfetto Integration Ready**: Designed for use with performance tracing tools
-
-## Tech Stack
-
-- **Language**: Kotlin
 - **UI Framework**: Jetpack Compose
-- **Design System**: Material 3
 - **Min SDK**: 24 (Android 7.0)
 - **Target SDK**: 36
 - **Build System**: Gradle with Kotlin DSL
@@ -50,14 +40,16 @@ app/src/main/java/dev/antariksh/perfsimulation/
 
 - **SimulationType**: Enum with `DIRECT` and `ACTIVITY` execution types
 - **Simulation**: Sealed class hierarchy with `DirectSimulation` and `ActivitySimulation` subclasses
-  containing simulation metadata (id, name, description, confirmation requirement)
+  containing simulation metadata (id, name, description, confirmation requirement) **and behavior**
+    - `DirectSimulation`: Contains `perform: (Context) -> Unit` lambda for direct ANR execution
+    - `ActivitySimulation`: Contains `activityClass: KClass<out Activity>` for activity-based ANRs
 - **Simulations**: Object with constants and `getAllSimulations()` function returning available
-  simulations
+  simulations with their execution behavior co-located
 
 ### UI Layer
 
-- **MainActivity**: Hosts the main screen with `PerfSimulationScreen` composable and handles ANR
-  execution logic
+- **MainActivity**: Hosts the main screen with `PerfSimulationScreen` composable and handles simple
+  ANR execution dispatch using sealed-type pattern
 - **PerfSimulationScreen**: Manages state for confirmation dialogs and orchestrates simulation
   execution
 - **PerfSimulationList**: LazyColumn displaying all available simulations
@@ -66,8 +58,8 @@ app/src/main/java/dev/antariksh/perfsimulation/
 
 ### Execution Types
 
-1. **DIRECT**: ANR code executes immediately in current context
-2. **ACTIVITY**: Launches separate activity for more complex ANR scenarios
+1. **DIRECT**: ANR code executes via lambda stored in `Simulation.DirectSimulation.perform`
+2. **ACTIVITY**: Launches activity specified in `Simulation.ActivitySimulation.activityClass`
 
 ## Development Commands
 
@@ -103,42 +95,33 @@ To add a new ANR simulation:
    const val NEW_ANR_ID = "new_anr_id"
    ```
 
-2. **Add to Simulations.getAllSimulations()**:
+2. **Add a direct executable ANR** (DIRECT type):
    ```kotlin
    Simulation.DirectSimulation(
        id = NEW_ANR_ID,
        name = "New ANR Type",
        description = "Description of the ANR behavior",
-       requiresConfirmation = true
+       requiresConfirmation = true,
+       perform = { context ->
+           // Your ANR code here (e.g., Thread.sleep(), infinite loop, heavy computation)
+           // This lambda executes on the main thread to intentionally cause ANR
+       }
    )
    ```
 
-3. **Handle execution in MainActivity.executeAnrSimulation()**:
+3. **Or add an activity that contains ANR** (ACTIVITY type):
    ```kotlin
-   when (simulation.type) {
-       SimulationType.DIRECT -> {
-           when (simulation.id) {
-               Simulations.NEW_ANR_ID -> {
-                   // Your ANR code here (e.g., Thread.sleep(), infinite loop, etc.)
-               }
-           }
-       }
-
-       SimulationType.ACTIVITY -> {
-           when (simulation.id) {
-               Simulations.NEW_ANR_ID -> {
-                   startActivity(Intent(this, NewAnrActivity::class.java))
-               }
-           }
-       }
-   }
+   Simulation.ActivitySimulation(
+       id = NEW_ANR_ID,
+       name = "New ANR Activity",
+       description = "Description of the ANR behavior",
+       requiresConfirmation = true,
+       activityClass = NewAnrActivity::class // Create new Activity eg: InfiniteLoopAnrActivity.kt
+   )
    ```
 
-4. **For ACTIVITY type, create new activity**:
-   - Create new Activity class extending ComponentActivity
-   - Add to AndroidManifest.xml with appropriate configuration
-   - Implement ANR logic and UI in the activity
-   - Follow the pattern used in InfiniteLoopAnrActivity.kt
+**Note**: No changes needed in `MainActivity.executeAnrSimulation()` - the execution logic is
+automatically handled by the sealed-type dispatch pattern.
 
 ## Safety Notes
 
@@ -155,10 +138,12 @@ controlled testing environments.
 When adding new ANR simulations:
 
 1. Follow the existing pattern in `Simulations.kt`
-2. Add appropriate handling in `MainActivity.executeAnrSimulation()`
+2. Include execution logic in the `perform` lambda (for DIRECT) or specify `activityClass` (for
+   ACTIVITY)
 3. Update `SIMULATIONS.md` with details about the new simulation
 4. Test the simulation thoroughly in a controlled environment
-5. Consider removing duplicate components to maintain clean codebase
+5. No changes needed in `MainActivity.executeAnrSimulation()` - execution is handled automatically
+6. Consider removing duplicate components to maintain clean codebase
 
 ## License
 

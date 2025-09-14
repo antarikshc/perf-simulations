@@ -1,48 +1,75 @@
-# ANR Simulations
+# Perf Simulations
+
+This document describes the available ANR simulation scenarios with their implementation details,
+including the core code that causes the ANR.
 
 ## Available Simulations
 
 ### 1. Main Thread Sleep (DIRECT)
 
 Blocks UI thread for 6 seconds using Thread.sleep()
-
 - **ID**: `main_thread_sleep`
 - **Duration**: 6 seconds
 - **Recovery**: Automatic
-- **Location**: `MainActivity.executeAnrSimulation()`
-- **Requires Confirmation**: Yes
+
+```kotlin
+perform = { Thread.sleep(6000) }
+```
 
 ### 2. Infinite Loop Activity (ACTIVITY)
 
 Launches separate activity with an infinite loop that can be triggered by user interaction
-
 - **ID**: `infinite_loop_activity`
 - **Duration**: Indefinite (until force closed)
 - **Recovery**: Force close required
-- **Location**: `InfiniteLoopAnrActivity.startInfiniteLoop()`
-- **Requires Confirmation**: Yes
+- **Location**: `InfiniteLoopAnrActivity` (launched via activityClass)
+
+```kotlin
+private fun startInfiniteLoop() {
+    while (true) {
+        // This will cause an ANR by creating an infinite loop on the main thread
+        // The loop will continue indefinitely, blocking the UI thread
+    }
+}
+```
 
 ### 3. Bubble Sort on Main Thread (DIRECT)
 
 Sorts a large array (100,000 elements) using bubble sort algorithm on the main thread, causing
 CPU-bound ANR
-
 - **ID**: `bubble_sort_main_thread`
-- **Duration**: Device-dependent (typically 10-30 seconds)
+- **Duration**: Device-dependent (typically 5-10 seconds)
 - **Recovery**: Automatic (after sort completes)
-- **Location**: `MainActivity.executeAnrSimulation()`
-- **Requires Confirmation**: Yes
+
+**Code snippet:**
+
+```kotlin
+perform = {
+    val size = 100_000
+    val arr = IntArray(size) { kotlin.random.Random.nextInt(0, size) }
+    for (i in 0 until size - 1) {
+        for (j in 0 until size - i - 1) {
+            if (arr[j] > arr[j + 1]) {
+                val tmp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = tmp
+            }
+        }
+    }
+}
+```
 
 ## Architecture
 
 ### Execution Types
 
-- **DIRECT**: ANR code executes immediately in current context
-- **ACTIVITY**: Launches separate activity for more complex ANR scenarios
+- **DIRECT**: ANR code executes via `perform` lambda stored in `Simulation.DirectSimulation`
+- **ACTIVITY**: Launches activity specified by `activityClass` in `Simulation.ActivitySimulation`
 
 ### Data Structure
 
-Simulations are defined using a sealed class hierarchy:
+Simulations are defined using a sealed class hierarchy that includes both metadata and execution
+behavior:
 
 ```kotlin
 sealed class Simulation(
@@ -53,50 +80,30 @@ sealed class Simulation(
 ) {
     abstract val type: SimulationType
 
-    data class DirectSimulation(...) : Simulation(...)
-    data class ActivitySimulation(...) : Simulation(...)
-}
-```
-
-### Adding New Simulations
-
-1. **Add constants to Simulations.kt**:
-
-```kotlin
-const val NEW_SIMULATION_ID = "new_simulation"
-```
-
-2. **Add to Simulations.getAllSimulations()**:
-
-```kotlin
-Simulation.DirectSimulation(
-    id = NEW_SIMULATION_ID,
-    name = "New Simulation",
-    description = "Description of the ANR behavior",
-    requiresConfirmation = true
-)
-```
-
-3. **Handle execution in MainActivity.executeAnrSimulation()**:
-
-```kotlin
-when (simulation.type) {
-    SimulationType.DIRECT -> {
-        when (simulation.id) {
-            Simulations.NEW_SIMULATION_ID -> {
-                // Your ANR code here
-            }
-        }
+    data class DirectSimulation(
+        override val id: String,
+        override val name: String,
+        override val description: String,
+        override val requiresConfirmation: Boolean = true,
+        val perform: (Context) -> Unit  // Execution behavior co-located with metadata
+    ) : Simulation(id, name, description, requiresConfirmation) {
+        override val type: SimulationType = SimulationType.DIRECT
     }
-    SimulationType.ACTIVITY -> {
-        when (simulation.id) {
-            Simulations.NEW_SIMULATION_ID -> {
-                startActivity(Intent(this, NewActivity::class.java))
-            }
-        }
+
+    data class ActivitySimulation(
+        override val id: String,
+        override val name: String,
+        override val description: String,
+        override val requiresConfirmation: Boolean = true,
+        val activityClass: KClass<out Activity>  // Activity class for execution
+    ) : Simulation(id, name, description, requiresConfirmation) {
+        override val type: SimulationType = SimulationType.ACTIVITY
     }
 }
 ```
+
+**Note**: No changes needed in `MainActivity.executeAnrSimulation()` - execution is handled
+automatically using sealed-type dispatch.
 
 ## Safety Notes
 
