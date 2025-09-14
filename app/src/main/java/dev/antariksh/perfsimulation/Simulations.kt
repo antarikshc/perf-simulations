@@ -10,7 +10,7 @@ object Simulations {
         Simulation.DirectSimulation(
             id = MAIN_THREAD_SLEEP_ID,
             name = "Main Thread Sleep",
-            description = "Blocks UI thread for 10 seconds using Thread.sleep()",
+            description = "Blocks UI thread for 6 seconds using Thread.sleep()",
             requiresConfirmation = true
         ),
         Simulation.DirectSimulation(
