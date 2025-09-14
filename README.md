@@ -29,16 +29,16 @@ understand ANR patterns, test monitoring tools, and analyze app performance unde
 
 ```
 app/src/main/java/dev/antariksh/perfsimulation/
-├── SimulationType.kt                          # Enum defining simulation execution types
-├── Simulation.kt                    # Data class for simulation metadata
-├── Simulations.kt                   # Sealed class containing all simulation definitions
-├── MainActivity.kt                     # Main screen with simulation list and execution logic
-├── InfiniteLoopAnrActivity.kt         # Example activity-based ANR simulation
+├── SimulationType.kt                     # Enum defining simulation execution types
+├── Simulation.kt                         # Sealed class for simulation data structure
+├── Simulations.kt                        # Object containing all simulation definitions
+├── MainActivity.kt                       # Main screen with simulation list and execution logic
+├── InfiniteLoopAnrActivity.kt            # Activity-based ANR simulation with infinite loop
 ├── components/
-│   ├── PerfSimulationItem.kt           # List item component for each simulation
-│   ├── SimulationItem.kt               # List item component for each simulation
-│   └── ConfirmationDialog.kt          # Optional confirmation dialog component
-└── ui/theme/                          # Material 3 theme configuration
+│   ├── SimulationItem.kt                 # List item component for each simulation
+│   ├── PerfSimulationItem.kt             # Duplicate component (consider removing)
+│   └── ConfirmationDialog.kt             # Confirmation dialog for ANR simulations
+└── ui/theme/                             # Material 3 theme configuration
     ├── Color.kt
     ├── Theme.kt
     └── Type.kt
@@ -49,16 +49,20 @@ app/src/main/java/dev/antariksh/perfsimulation/
 ### Data Layer
 
 - **SimulationType**: Enum with `DIRECT` and `ACTIVITY` execution types
-- **Simulation**: Data class containing simulation metadata (id, name, description, type,
-  confirmation requirement)
-- **Simulations**: Sealed class with companion object storing all available simulations
+- **Simulation**: Sealed class hierarchy with `DirectSimulation` and `ActivitySimulation` subclasses
+  containing simulation metadata (id, name, description, confirmation requirement)
+- **Simulations**: Object with constants and `getAllSimulations()` function returning available
+  simulations
 
 ### UI Layer
 
-- **MainActivity**: Hosts the main simulation list and handles execution logic
-- **PerfSimulationScreen**: Manages state and confirmation dialogs
+- **MainActivity**: Hosts the main screen with `PerfSimulationScreen` composable and handles ANR
+  execution logic
+- **PerfSimulationScreen**: Manages state for confirmation dialogs and orchestrates simulation
+  execution
 - **PerfSimulationList**: LazyColumn displaying all available simulations
-- **PerfSimulationItem**: Individual list item with execute button
+- **SimulationItem**: Individual list item component with execute button
+- **ConfirmationDialog**: Alert dialog for confirming ANR simulation execution
 
 ### Execution Types
 
@@ -94,42 +98,47 @@ app/src/main/java/dev/antariksh/perfsimulation/
 
 To add a new ANR simulation:
 
-1. **Add to Simulations.kt**:
+1. **Add constants to Simulations.kt**:
+   ```kotlin
+   const val NEW_ANR_ID = "new_anr_id"
+   ```
+
+2. **Add to Simulations.getAllSimulations()**:
    ```kotlin
    Simulation.DirectSimulation(
-       id = "new_anr_id",
+       id = NEW_ANR_ID,
        name = "New ANR Type",
        description = "Description of the ANR behavior",
-       type = SimulationType.DIRECT, // or SimulationType.ACTIVITY
        requiresConfirmation = true
    )
    ```
 
-2. **Handle execution in MainActivity**:
+3. **Handle execution in MainActivity.executeAnrSimulation()**:
    ```kotlin
-   // For DIRECT type
-   SimulationType.DIRECT -> {
-       when (simulation.id) {
-           "new_anr_id" -> {
-               // Your ANR code here
+   when (simulation.type) {
+       SimulationType.DIRECT -> {
+           when (simulation.id) {
+               Simulations.NEW_ANR_ID -> {
+                   // Your ANR code here (e.g., Thread.sleep(), infinite loop, etc.)
+               }
            }
        }
-   }
 
-   // For ACTIVITY type
-   SimulationType.ACTIVITY -> {
-       when (simulation.id) {
-           "new_anr_id" -> {
-               startActivity(Intent(this, NewAnrActivity::class.java))
+       SimulationType.ACTIVITY -> {
+           when (simulation.id) {
+               Simulations.NEW_ANR_ID -> {
+                   startActivity(Intent(this, NewAnrActivity::class.java))
+               }
            }
        }
    }
    ```
 
-3. **For ACTIVITY type, create new activity**:
-    - Create new Activity class
-    - Add to AndroidManifest.xml
-    - Implement ANR logic in the activity
+4. **For ACTIVITY type, create new activity**:
+   - Create new Activity class extending ComponentActivity
+   - Add to AndroidManifest.xml with appropriate configuration
+   - Implement ANR logic and UI in the activity
+   - Follow the pattern used in InfiniteLoopAnrActivity.kt
 
 ## Safety Notes
 
@@ -141,14 +150,31 @@ controlled testing environments.
 - Recommended for use with debugging and analysis tools
 - Not intended for production environments
 
+## Code Quality Notes
+
+### Duplicate Components
+
+⚠️ **Issue**: The project contains duplicate UI components:
+
+- `SimulationItem.kt` and `PerfSimulationItem.kt` are identical
+
+**Recommendation**: Remove `PerfSimulationItem.kt` and update any references to use
+`SimulationItem.kt`
+
+### Naming Consistency
+
+- Consider renaming `Simulations.kt` to `SimulationDefinitions.kt` for better clarity
+- The current naming suggests it contains multiple simulation objects rather than definitions
+
 ## Contributing
 
 When adding new ANR simulations:
 
-1. Follow the existing pattern in `ANRSimulations.kt`
+1. Follow the existing pattern in `Simulations.kt`
 2. Add appropriate handling in `MainActivity.executeAnrSimulation()`
 3. Update `SIMULATIONS.md` with details about the new simulation
-4. Test the simulation thoroughly
+4. Test the simulation thoroughly in a controlled environment
+5. Consider removing duplicate components to maintain clean codebase
 
 ## License
 
