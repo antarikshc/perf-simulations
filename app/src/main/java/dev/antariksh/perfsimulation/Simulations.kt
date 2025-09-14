@@ -16,7 +16,7 @@ object Simulations {
         Simulation.DirectSimulation(
             id = BUBBLE_SORT_MAIN_THREAD_ID,
             name = "Bubble Sort on Large Array",
-            description = "Sorts a large array with bubble sort on the UI thread to trigger an ANR",
+            description = "Sorts a large array with bubble sort on the main thread",
             requiresConfirmation = true
         ),
         Simulation.ActivitySimulation(
