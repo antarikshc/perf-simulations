@@ -46,6 +46,8 @@ class MainActivity : ComponentActivity() {
                         Thread.sleep(6000)
                     }
                     Simulations.BUBBLE_SORT_MAIN_THREAD_ID -> {
+                        // 100K will cause ANR
+                        // 50K will be a long running task, good for testing ANR-like scenarios
                         val size = 100000
                         val largeArray = IntArray(size) { kotlin.random.Random.nextInt(0, size) }
 
