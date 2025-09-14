@@ -1,6 +1,6 @@
 # Perf Simulation App
 
-A modern Android application designed to simulate Application Not Responding (ANR) scenarios for
+Android app designed to simulate Application Not Responding (ANR) scenarios for
 testing with performance analysis tools like Perfetto tracing and other debugging utilities.
 
 ## Overview
