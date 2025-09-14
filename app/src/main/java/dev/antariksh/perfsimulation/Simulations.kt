@@ -1,4 +1,4 @@
-package dev.antariksh.anrsimulation
+package dev.antariksh.perfsimulation
 
 object Simulations {
     // ANR Simulation ID Constants

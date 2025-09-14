@@ -1,10 +1,10 @@
-package dev.antariksh.anrsimulation.components
+package dev.antariksh.perfsimulation.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import dev.antariksh.anrsimulation.Simulation
+import dev.antariksh.perfsimulation.Simulation
 
 @Composable
 fun ConfirmationDialog(

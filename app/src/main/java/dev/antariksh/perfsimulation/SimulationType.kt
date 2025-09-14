@@ -1,4 +1,4 @@
-package dev.antariksh.anrsimulation
+package dev.antariksh.perfsimulation
 
 enum class SimulationType {
     DIRECT,

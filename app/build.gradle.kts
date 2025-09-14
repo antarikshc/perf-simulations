@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "dev.antariksh.anrsimulation"
+    namespace = "dev.antariksh.perfsimulation"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "dev.antariksh.anrsimulation"
+        applicationId = "dev.antariksh.perfsimulation"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

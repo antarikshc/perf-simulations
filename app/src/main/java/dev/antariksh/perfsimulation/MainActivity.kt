@@ -1,4 +1,4 @@
-package dev.antariksh.anrsimulation
+package dev.antariksh.perfsimulation
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,18 +17,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.antariksh.anrsimulation.components.ConfirmationDialog
-import dev.antariksh.anrsimulation.components.SimulationItem
-import dev.antariksh.anrsimulation.ui.theme.ANRSimulationTheme
+import dev.antariksh.perfsimulation.components.ConfirmationDialog
+import dev.antariksh.perfsimulation.components.SimulationItem
+import dev.antariksh.perfsimulation.ui.theme.PerfSimulationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ANRSimulationTheme {
+            PerfSimulationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ANRSimulationScreen(
+                    PerfSimulationScreen(
                         onExecuteAnr = { simulation -> executeAnrSimulation(simulation) },
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -60,13 +60,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ANRSimulationScreen(
+fun PerfSimulationScreen(
     onExecuteAnr: (Simulation) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var simulationToConfirm by remember { mutableStateOf<Simulation?>(null) }
 
-    ANRSimulationList(
+    PerfSimulationList(
         onExecuteAnr = { simulation ->
             if (simulation.requiresConfirmation) {
                 simulationToConfirm = simulation
@@ -92,7 +92,7 @@ fun ANRSimulationScreen(
 }
 
 @Composable
-fun ANRSimulationList(
+fun PerfSimulationList(
     onExecuteAnr: (Simulation) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -108,8 +108,8 @@ fun ANRSimulationList(
 
 @Preview(showBackground = true)
 @Composable
-fun ANRSimulationScreenPreview() {
-    ANRSimulationTheme {
-        ANRSimulationScreen(onExecuteAnr = {})
+fun PerfSimulationScreenPreview() {
+    PerfSimulationTheme {
+        PerfSimulationScreen(onExecuteAnr = {})
     }
 }

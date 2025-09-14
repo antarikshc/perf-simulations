@@ -5,11 +5,11 @@ repository.
 
 ## Project Overview
 
-This is an Android application called "ANR Simulation" designed to simulate Application Not
+This is an Android application called "Perf Simulation" designed to simulate Application Not
 Responding (ANR) scenarios, likely for testing with Perfetto tracing and MCP (Model Context
 Protocol) integration.
 
-- **Package**: `dev.antariksh.anrsimulation`
+- **Package**: `dev.antariksh.perfsimulation`
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose
 - **Min SDK**: 24, Target SDK: 36
@@ -60,7 +60,7 @@ Protocol) integration.
 
 ### Package Structure
 
-- `app/src/main/java/dev/antariksh/anrsimulation/`
+- `app/src/main/java/dev/antariksh/perfsimulation/`
     - `MainActivity.kt` - Main activity with Compose UI setup
     - `ui/theme/` - Compose theme configuration (Color.kt, Type.kt, Theme.kt)
 

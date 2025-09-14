@@ -1,4 +1,4 @@
-package dev.antariksh.anrsimulation
+package dev.antariksh.perfsimulation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,14 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.antariksh.anrsimulation.ui.theme.ANRSimulationTheme
+import dev.antariksh.perfsimulation.ui.theme.PerfSimulationTheme
 
 class InfiniteLoopAnrActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ANRSimulationTheme {
+            PerfSimulationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     InfiniteLoopContent(
                         onStartAnr = { startInfiniteLoop() },

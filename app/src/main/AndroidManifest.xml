@@ -10,13 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ANRSimulation"
+        android:theme="@style/Theme.PerfSimulation"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.ANRSimulation">
+            android:theme="@style/Theme.PerfSimulation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +27,7 @@
             android:name=".InfiniteLoopAnrActivity"
             android:exported="false"
             android:label="Infinite Loop ANR"
-            android:theme="@style/Theme.ANRSimulation" />
+            android:theme="@style/Theme.PerfSimulation" />
     </application>
 
 </manifest>

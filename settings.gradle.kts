@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ANR Simulation"
+rootProject.name = "Perf Simulation"
 include(":app")
  

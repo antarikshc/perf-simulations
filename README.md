@@ -1,4 +1,4 @@
-# ANR Simulation App
+# Perf Simulation App
 
 A modern Android application designed to simulate Application Not Responding (ANR) scenarios for
 testing with performance analysis tools like Perfetto tracing and other debugging utilities.
@@ -28,14 +28,15 @@ understand ANR patterns, test monitoring tools, and analyze app performance unde
 ## Project Structure
 
 ```
-app/src/main/java/dev/antariksh/anrsimulation/
-├── ANRType.kt                          # Enum defining ANR execution types
-├── ANRSimulation.kt                    # Data class for ANR simulation metadata
-├── ANRSimulations.kt                   # Sealed class containing all simulation definitions
-├── MainActivity.kt                     # Main screen with ANR list and execution logic
+app/src/main/java/dev/antariksh/perfsimulation/
+├── SimulationType.kt                          # Enum defining simulation execution types
+├── Simulation.kt                    # Data class for simulation metadata
+├── Simulations.kt                   # Sealed class containing all simulation definitions
+├── MainActivity.kt                     # Main screen with simulation list and execution logic
 ├── InfiniteLoopAnrActivity.kt         # Example activity-based ANR simulation
 ├── components/
-│   ├── ANRSimulationItem.kt           # List item component for each simulation
+│   ├── PerfSimulationItem.kt           # List item component for each simulation
+│   ├── SimulationItem.kt               # List item component for each simulation
 │   └── ConfirmationDialog.kt          # Optional confirmation dialog component
 └── ui/theme/                          # Material 3 theme configuration
     ├── Color.kt
@@ -47,17 +48,17 @@ app/src/main/java/dev/antariksh/anrsimulation/
 
 ### Data Layer
 
-- **ANRType**: Enum with `DIRECT` and `ACTIVITY` execution types
-- **ANRSimulation**: Data class containing simulation metadata (id, name, description, type,
+- **SimulationType**: Enum with `DIRECT` and `ACTIVITY` execution types
+- **Simulation**: Data class containing simulation metadata (id, name, description, type,
   confirmation requirement)
-- **ANRSimulations**: Sealed class with companion object storing all available simulations
+- **Simulations**: Sealed class with companion object storing all available simulations
 
 ### UI Layer
 
 - **MainActivity**: Hosts the main simulation list and handles execution logic
-- **ANRSimulationScreen**: Manages state and confirmation dialogs
-- **ANRSimulationList**: LazyColumn displaying all available simulations
-- **ANRSimulationItem**: Individual list item with execute button
+- **PerfSimulationScreen**: Manages state and confirmation dialogs
+- **PerfSimulationList**: LazyColumn displaying all available simulations
+- **PerfSimulationItem**: Individual list item with execute button
 
 ### Execution Types
 
@@ -93,13 +94,13 @@ app/src/main/java/dev/antariksh/anrsimulation/
 
 To add a new ANR simulation:
 
-1. **Add to ANRSimulations.kt**:
+1. **Add to Simulations.kt**:
    ```kotlin
-   ANRSimulation(
+   Simulation.DirectSimulation(
        id = "new_anr_id",
        name = "New ANR Type",
        description = "Description of the ANR behavior",
-       type = ANRType.DIRECT, // or ANRType.ACTIVITY
+       type = SimulationType.DIRECT, // or SimulationType.ACTIVITY
        requiresConfirmation = true
    )
    ```
@@ -107,16 +108,16 @@ To add a new ANR simulation:
 2. **Handle execution in MainActivity**:
    ```kotlin
    // For DIRECT type
-   ANRType.DIRECT -> {
+   SimulationType.DIRECT -> {
        when (simulation.id) {
            "new_anr_id" -> {
                // Your ANR code here
            }
        }
    }
-   
+
    // For ACTIVITY type
-   ANRType.ACTIVITY -> {
+   SimulationType.ACTIVITY -> {
        when (simulation.id) {
            "new_anr_id" -> {
                startActivity(Intent(this, NewAnrActivity::class.java))

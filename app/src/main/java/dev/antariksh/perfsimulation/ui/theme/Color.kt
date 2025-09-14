@@ -1,4 +1,4 @@
-package dev.antariksh.anrsimulation.ui.theme
+package dev.antariksh.perfsimulation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
