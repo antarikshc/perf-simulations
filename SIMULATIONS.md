@@ -59,6 +59,31 @@ perform = {
 }
 ```
 
+### 4. Binder IPC Overload (DIRECT)
+
+Makes 1000 sequential binder calls to Settings.System.getInt() with 10ms delays between each call,
+causing cumulative IPC delays that exceed the input dispatch timeout (5 seconds)
+
+- **ID**: `binder_ipc_overload`
+- **Duration**: ~10 seconds (1000 calls × 10ms each)
+- **Recovery**: Automatic (after all calls complete)
+
+**Code snippet:**
+
+```kotlin
+perform = { context ->
+    // 1000 sequential binder calls with added delays
+    for (i in 0..999) {
+        try {
+            Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+            SystemClock.sleep(10) // 10ms per iteration = ~10 seconds total
+        } catch (e: Settings.SettingNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+}
+```
+
 ## Architecture
 
 ### Execution Types

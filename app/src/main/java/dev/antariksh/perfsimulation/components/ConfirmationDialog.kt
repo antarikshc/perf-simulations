@@ -18,7 +18,7 @@ fun ConfirmationDialog(
             Text("Confirm Simulation")
         },
         text = {
-            Text("Are you sure you want to execute '${simulation.name}'? This simulation may affect app performance.")
+            Text("Are you sure you want to execute '${simulation.name}'? This might hang your device.")
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
