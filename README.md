@@ -150,22 +150,6 @@ controlled testing environments.
 - Recommended for use with debugging and analysis tools
 - Not intended for production environments
 
-## Code Quality Notes
-
-### Duplicate Components
-
-⚠️ **Issue**: The project contains duplicate UI components:
-
-- `SimulationItem.kt` and `PerfSimulationItem.kt` are identical
-
-**Recommendation**: Remove `PerfSimulationItem.kt` and update any references to use
-`SimulationItem.kt`
-
-### Naming Consistency
-
-- Consider renaming `Simulations.kt` to `SimulationDefinitions.kt` for better clarity
-- The current naming suggests it contains multiple simulation objects rather than definitions
-
 ## Contributing
 
 When adding new ANR simulations:
