@@ -38,40 +38,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun executeAnrSimulation(simulation: Simulation) {
-        when (simulation.type) {
-            SimulationType.DIRECT -> {
-                when (simulation.id) {
-                    Simulations.MAIN_THREAD_SLEEP_ID -> {
-                        // Block the main thread for 6 seconds
-                        Thread.sleep(6000)
-                    }
-                    Simulations.BUBBLE_SORT_MAIN_THREAD_ID -> {
-                        // 100K will cause ANR
-                        // 50K will be a long running task, good for testing ANR-like scenarios
-                        val size = 100000
-                        val largeArray = IntArray(size) { kotlin.random.Random.nextInt(0, size) }
-
-                        // Bubble sort on main thread - causes ANR for large arrays
-                        for (i in 0 until size - 1) {
-                            for (j in 0 until size - i - 1) {
-                                if (largeArray[j] > largeArray[j + 1]) {
-                                    val temp = largeArray[j]
-                                    largeArray[j] = largeArray[j + 1]
-                                    largeArray[j + 1] = temp
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            SimulationType.ACTIVITY -> {
-                when (simulation.id) {
-                    Simulations.INFINITE_LOOP_ACTIVITY_ID -> {
-                        startActivity(Intent(this, InfiniteLoopAnrActivity::class.java))
-                    }
-                }
-            }
+        when (simulation) {
+            is Simulation.DirectSimulation -> simulation.perform(this)
+            is Simulation.ActivitySimulation -> startActivity(
+                Intent(
+                    this,
+                    simulation.activityClass.java
+                )
+            )
         }
     }
 }

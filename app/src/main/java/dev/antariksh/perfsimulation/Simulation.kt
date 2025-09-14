@@ -1,5 +1,9 @@
 package dev.antariksh.perfsimulation
 
+import android.app.Activity
+import android.content.Context
+import kotlin.reflect.KClass
+
 sealed class Simulation(
     open val id: String,
     open val name: String,
@@ -12,7 +16,8 @@ sealed class Simulation(
         override val id: String,
         override val name: String,
         override val description: String,
-        override val requiresConfirmation: Boolean = true
+        override val requiresConfirmation: Boolean = true,
+        val perform: (Context) -> Unit
     ) : Simulation(id, name, description, requiresConfirmation) {
         override val type: SimulationType = SimulationType.DIRECT
     }
@@ -21,7 +26,8 @@ sealed class Simulation(
         override val id: String,
         override val name: String,
         override val description: String,
-        override val requiresConfirmation: Boolean = true
+        override val requiresConfirmation: Boolean = true,
+        val activityClass: KClass<out Activity>
     ) : Simulation(id, name, description, requiresConfirmation) {
         override val type: SimulationType = SimulationType.ACTIVITY
     }

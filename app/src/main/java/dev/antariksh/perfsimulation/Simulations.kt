@@ -10,20 +10,35 @@ object Simulations {
         Simulation.DirectSimulation(
             id = MAIN_THREAD_SLEEP_ID,
             name = "Main Thread Sleep",
-            description = "Blocks UI thread for 6 seconds using Thread.sleep()",
-            requiresConfirmation = true
+            description = "Blocks UI thread for ~6 seconds using Thread.sleep()",
+            requiresConfirmation = true,
+            perform = { Thread.sleep(6000) }
         ),
         Simulation.DirectSimulation(
             id = BUBBLE_SORT_MAIN_THREAD_ID,
             name = "Bubble Sort on Large Array",
-            description = "Sorts a large array with bubble sort on the main thread",
-            requiresConfirmation = true
+            description = "Sorts a large array with bubble sort on the UI thread",
+            requiresConfirmation = true,
+            perform = {
+                val size = 100_000
+                val arr = IntArray(size) { kotlin.random.Random.nextInt(0, size) }
+                for (i in 0 until size - 1) {
+                    for (j in 0 until size - i - 1) {
+                        if (arr[j] > arr[j + 1]) {
+                            val tmp = arr[j]
+                            arr[j] = arr[j + 1]
+                            arr[j + 1] = tmp
+                        }
+                    }
+                }
+            }
         ),
         Simulation.ActivitySimulation(
             id = INFINITE_LOOP_ACTIVITY_ID,
             name = "Infinite Loop Activity",
-            description = "Launches separate activity with an infinite loop",
-            requiresConfirmation = true
+            description = "Launches separate activity with an infinite loop on main thread",
+            requiresConfirmation = true,
+            activityClass = InfiniteLoopAnrActivity::class
         )
     )
 }
