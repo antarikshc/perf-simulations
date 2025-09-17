@@ -10,6 +10,7 @@ object Simulations {
     const val INFINITE_LOOP_ACTIVITY_ID = "infinite_loop_activity"
     const val BUBBLE_SORT_MAIN_THREAD_ID = "bubble_sort_main_thread"
     const val BINDER_IPC_OVERLOAD_ID = "binder_ipc_overload"
+    const val JOIN_WORKER_ON_MAIN_ID = "join_worker_on_main"
 
     fun getAllSimulations(): List<Simulation> = listOf(
         Simulation.DirectSimulation(
@@ -60,6 +61,17 @@ object Simulations {
                         e.printStackTrace()
                     }
                 }
+            }
+        ),
+        Simulation.DirectSimulation(
+            id = JOIN_WORKER_ON_MAIN_ID,
+            name = "Join Worker on Main",
+            description = "UI thread blocks with Thread.join() waiting for a worker (~6s)",
+            requiresConfirmation = true,
+            perform = { _ ->
+                val worker = Thread { Thread.sleep(6000L) } // 6s to reliably trigger ANR
+                worker.start()
+                worker.join() // BAD: blocks main thread until worker completes
             }
         ),
         Simulation.ActivitySimulation(

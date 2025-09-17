@@ -84,6 +84,25 @@ perform = { context ->
 }
 ```
 
+### 5. Main Thread Waiting for Worker (DIRECT)
+
+Blocks the UI thread by calling `Thread.join()` on a worker thread that sleeps for 6 seconds,
+demonstrating the anti-pattern of main thread synchronization with background work.
+
+- **ID**: `join_worker_on_main`
+- **Duration**: ~6 seconds
+- **Recovery**: Automatic (after worker completes)
+
+**Code snippet:**
+
+```kotlin
+perform = { _ ->
+    val worker = Thread { Thread.sleep(6000L) } // 6s to reliably trigger ANR
+    worker.start()
+    worker.join() // BAD: blocks main thread until worker completes
+}
+```
+
 ## Architecture
 
 ### Execution Types
